@@ -1,0 +1,108 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:h="http://java.sun.com/jsf/html" xmlns:f="http://java.sun.com/jsf/core" xmlns:p="http://primefaces.org/ui">
+
+
+<h:head>
+	<title>WAN Order Status</title>
+	<link rel="shortcut icon" type="image/x-icon" href="#{request.contextPath}/imgs/favicon.ico" />
+</h:head>
+
+<h:body>
+	<h:outputStylesheet library="css" name="default.css" />
+	<h:outputScript library="js" name="bpmn-viewer.js" />
+	<h:outputScript library="js" name="loadProcessMap.js" />
+
+	<h:form enctype="multipart/form-data">
+		<p:growl id="growl" showDetail="true" sticky="true" />
+		<p:panelGrid styleClass="main-panel" columns="1">
+			<f:facet name="header">
+				<h:outputText value="WAN Order Status" style="font-size:16px" />
+			</f:facet>
+
+			<h:panelGroup layout="block">
+
+				<h:panelGroup layout="block" styleClass="SearchBox">
+					<p:inputText id="input" value="#{searcher.input}" style="height:30px;width:450px;font-size: 16px !important;border-radius: 3px 0 0 3px;" />
+					<p:commandButton style="height:40px;width: 80px; padding-top: 3px;margin-left:-2px;border-radius: 0 3px 3px 0" value="Find" id="searchButton" update="ResultTable,input,growl"
+						actionListener="#{searcher.search}" />
+				</h:panelGroup>
+
+				<h:outputText value=" " styleClass="Notice" />
+
+				<p:dataTable id="ResultTable" var="_order" value="#{searcher.results}">
+					<p:column style="width:16px">
+						<p:commandButton
+							onclick="countryCode='#{_order.countryCode}';plannedInstallationDate='#{_order.plannedInstallationDate}';connectionNr='#{_order.number}';stage='#{_order.status}';requesetDate='#{_order.dateCustomerRequest}';loadProcessMap();PF('p').show();"
+							icon="ui-icon-search" type="button" title="View">
+						</p:commandButton>
+					</p:column>
+					<p:column headerText="Connection ID">
+						<h:outputText value="#{_order.number}" />
+					</p:column>
+					<p:column headerText="Stages" width="30%">
+						<h:outputText value="#{_order.status}" />
+					</p:column>
+					<p:column headerText="Country Code">
+						<h:outputText value="#{_order.countryCode}" />
+					</p:column>
+					<p:column headerText="Location Code">
+						<h:outputText value="#{_order.locatioCode}" />
+					</p:column>
+					<p:column headerText="Company name" width="40%">
+						<h:outputText value="#{_order.company}" />
+					</p:column>
+					<p:column headerText="Contact person">
+						<h:outputText value="#{_order.contact}" />
+					</p:column>
+				</p:dataTable>
+				<p:dialog header="Process overview" widgetVar="p" modal="true" height="480" width="620">
+					<div id="status" style="height: 16%;">
+						<div style="display: inline-block">
+							<div>
+								<span style="width: 280px; display: inline-block">Connection ID:</span><span id="connectionNumber"></span>
+							</div>
+							<div>
+								<span style="width: 280px; display: inline-block">Request Date from Customer:</span><span id="requestDateValue"></span>
+							</div>
+							<div>
+								<span style="width: 280px; display: inline-block">Estimated total working days till current stage: </span><span id="planWorkingDaysToNow"></span>
+							</div>
+							<div>
+								<span style="width: 280px; display: inline-block"># of Working days as of date:</span><span id="workingDaysUntilNow"></span>
+							</div>
+							<div>
+								<span style="width: 280px; display: inline-block">Planned RFS schedule: </span><span id="plannedInstalationDate"></span>
+							</div>
+						</div>
+						<div id="bar"></div>
+						<div id="barDesc">Overall status</div>
+					</div>
+					<div id="canvas" style="height: 84%"></div>
+				</p:dialog>
+			</h:panelGroup>
+
+			<f:facet name="footer">
+				<center>
+					<h:outputText value="Innovated by CI/OSR-CN" style="color:grey" />
+					<h:outputText value="|" style="margin-right:15px;margin-left:15px;color:grey" />
+					<h:outputText value="Dev. by CI/AFR-CN " style="color:grey" />
+					<h:outputText value="|" style="margin-right:15px;margin-left:15px;color:grey" />
+					<h:outputText value="V1.0  Better experience in Firefox" style="color:grey" />
+				</center>
+			</f:facet>
+		</p:panelGrid>
+	</h:form>
+
+	<p:ajaxStatus style="width:64px;height:64px;position:fixed;right:5px;bottom:5px">
+		<f:facet name="start">
+			<p:graphicImage value="/imgs/loading.gif" />
+		</f:facet>
+
+		<f:facet name="complete">
+			<h:outputText value="" />
+		</f:facet>
+	</p:ajaxStatus>
+
+</h:body>
+
+</html>
